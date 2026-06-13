@@ -1,78 +1,193 @@
-import streamlit as st
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>규민이의 공원 🌳</title>
 
-st.set_page_config(
-    page_title="MBTI 포켓몬 추천기",
-    page_icon="🎮",
-    layout="centered"
-)
-
-pokemon_data = {
-    "INTJ": ("뮤츠", "전략적이고 독립적인 천재형 🧠"),
-    "INTP": ("후딘", "분석적이고 호기심이 많은 탐구자 🔬"),
-    "ENTJ": ("리자몽", "강한 리더십을 가진 지휘관 🔥"),
-    "ENTP": ("팬텀", "창의적이고 장난기 많은 혁신가 😈"),
-    "INFJ": ("루기아", "신비롭고 통찰력이 뛰어난 조언자 🌊"),
-    "INFP": ("이브이", "상상력이 풍부한 몽상가 🌈"),
-    "ENFJ": ("피카츄", "사람들을 이끄는 따뜻한 리더 ⚡"),
-    "ENFP": ("뮤", "자유롭고 호기심 많은 모험가 ✨"),
-    "ISTJ": ("거북왕", "책임감 있고 믿음직한 수호자 🛡️"),
-    "ISFJ": ("해피너스", "배려심 깊고 따뜻한 힐러 💖"),
-    "ESTJ": ("보스로라", "체계적이고 강인한 관리자 ⚙️"),
-    "ESFJ": ("푸린", "친화력이 뛰어난 인기인 🎤"),
-    "ISTP": ("루카리오", "침착하고 실용적인 해결사 👊"),
-    "ISFP": ("나인테일", "감성적이고 예술적인 영혼 🌸"),
-    "ESTP": ("고우스트", "스릴을 즐기는 행동파 ⚡"),
-    "ESFP": ("꼬부기", "즐거움을 전파하는 엔터테이너 😎")
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
 }
 
-st.markdown(
-    """
-    <h1 style='text-align:center;'>🎮 MBTI 포켓몬 추천기 🎮</h1>
-    <p style='text-align:center; font-size:18px;'>
-    당신의 MBTI와 가장 잘 어울리는 포켓몬은 누구일까요? 🤔
-    </p>
-    """,
-    unsafe_allow_html=True
-)
+#game{
+    width:100vw;
+    height:100vh;
+    background:#7dd87d;
+    position:relative;
+}
 
-st.divider()
+/* 플레이어 */
+#player{
+    width:50px;
+    height:50px;
+    background:#4a6cff;
+    border-radius:50%;
+    position:absolute;
+    left:300px;
+    top:300px;
+    border:4px solid white;
+    box-sizing:border-box;
+}
 
-mbti = st.text_input(
-    "📝 MBTI를 입력하세요 (예: INFP)",
-    max_chars=4
-).upper()
+/* 눈 */
+.eye{
+    width:8px;
+    height:8px;
+    background:white;
+    border-radius:50%;
+    position:absolute;
+    top:15px;
+}
 
-if st.button("🔍 포켓몬 추천받기", use_container_width=True):
+.left-eye{
+    left:12px;
+}
 
-    if mbti in pokemon_data:
-        pokemon, desc = pokemon_data[mbti]
+.right-eye{
+    right:12px;
+}
 
-        st.balloons()
+/* 말풍선 */
+#bubble{
+    position:absolute;
+    padding:8px 12px;
+    background:white;
+    border-radius:15px;
+    font-size:24px;
+    display:none;
+    pointer-events:none;
+    transform:translate(-25%, -100%);
+}
 
-        st.success("추천 결과가 나왔어요! 🎉")
+/* 나무 */
+.tree{
+    width:70px;
+    height:70px;
+    background:green;
+    border-radius:50%;
+    position:absolute;
+}
 
-        st.markdown(
-            f"""
-            ## 🌟 당신에게 어울리는 포켓몬
+.trunk{
+    width:20px;
+    height:30px;
+    background:brown;
+    position:absolute;
+    left:25px;
+    top:60px;
+}
 
-            # 🎯 {pokemon}
+/* UI */
+#ui{
+    position:fixed;
+    top:15px;
+    left:15px;
+    background:rgba(255,255,255,0.9);
+    padding:15px;
+    border-radius:12px;
+}
 
-            ### 💡 성향
-            **{desc}**
+button{
+    border:none;
+    padding:10px;
+    margin:3px;
+    font-size:20px;
+    cursor:pointer;
+    border-radius:10px;
+}
+</style>
+</head>
+<body>
 
-            ### 🎮 한 줄 평가
-            "{pokemon}처럼 자신만의 매력을 가진 특별한 사람이에요!"
-            """
-        )
+<div id="ui">
+    <h3>😀 이모지</h3>
+    <button onclick="showEmoji('😀')">😀</button>
+    <button onclick="showEmoji('😎')">😎</button>
+    <button onclick="showEmoji('😂')">😂</button>
+    <button onclick="showEmoji('❤️')">❤️</button>
+</div>
 
-        st.info(
-            f"📊 {mbti} 유형은 자신만의 강점을 살려 주변 사람들에게 독특한 인상을 남기는 경우가 많아요!"
-        )
+<div id="game">
 
-    else:
-        st.error("❌ 올바른 MBTI를 입력해주세요! (예: INTJ, ENFP)")
-        st.caption("가능한 값: INTJ, INTP, ENTJ, ENTP, INFJ, INFP, ENFJ, ENFP, ISTJ, ISFJ, ESTJ, ESFJ, ISTP, ISFP, ESTP, ESFP")
+    <div class="tree" style="left:100px;top:100px;">
+        <div class="trunk"></div>
+    </div>
 
-st.divider()
+    <div class="tree" style="left:700px;top:150px;">
+        <div class="trunk"></div>
+    </div>
 
-st.caption("✨ Made by 규민이의 웹사이트")
+    <div class="tree" style="left:500px;top:500px;">
+        <div class="trunk"></div>
+    </div>
+
+    <div class="tree" style="left:900px;top:300px;">
+        <div class="trunk"></div>
+    </div>
+
+    <div id="player">
+        <div class="eye left-eye"></div>
+        <div class="eye right-eye"></div>
+    </div>
+
+    <div id="bubble"></div>
+
+</div>
+
+<script>
+const player = document.getElementById("player");
+const bubble = document.getElementById("bubble");
+
+let x = 300;
+let y = 300;
+let speed = 4;
+
+let keys = {};
+
+document.addEventListener("keydown", e=>{
+    keys[e.key.toLowerCase()] = true;
+});
+
+document.addEventListener("keyup", e=>{
+    keys[e.key.toLowerCase()] = false;
+});
+
+function update(){
+
+    if(keys["w"]) y -= speed;
+    if(keys["s"]) y += speed;
+    if(keys["a"]) x -= speed;
+    if(keys["d"]) x += speed;
+
+    x = Math.max(0, Math.min(window.innerWidth-50,x));
+    y = Math.max(0, Math.min(window.innerHeight-50,y));
+
+    player.style.left = x + "px";
+    player.style.top = y + "px";
+
+    bubble.style.left = (x+10) + "px";
+    bubble.style.top = y + "px";
+
+    requestAnimationFrame(update);
+}
+
+function showEmoji(emoji){
+
+    bubble.innerHTML = emoji;
+    bubble.style.display = "block";
+
+    clearTimeout(window.emojiTimeout);
+
+    window.emojiTimeout = setTimeout(()=>{
+        bubble.style.display = "none";
+    },2000);
+}
+
+update();
+</script>
+
+</body>
+</html>
